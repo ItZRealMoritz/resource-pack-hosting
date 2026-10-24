@@ -5,8 +5,8 @@
     "version": "1.0.4",
     "description": "Host Minecraft resource packs directly on the panel: upload a ZIP, get a protected download link and SHA-1 for server.properties.",
     "category": "plugin",
-    "url": null,
-    "update_url": null,
+    "url": "https://github.com/ItZRealMoritz/resource-pack-hosting",
+    "update_url": "https://hub.pelican.dev/plugins/resource-pack-hosting/update.json",
     "namespace": "ItZRealMoritz\\ResourcePackHosting",
     "class": "ResourcePackHostingPlugin",
     "panels": [
