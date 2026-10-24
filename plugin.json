@@ -1,0 +1,20 @@
+{
+    "id": "resource-pack-hosting",
+    "name": "Resource Pack Hosting",
+    "author": "ItZRealMoritz",
+    "version": "1.0.4",
+    "description": "Host Minecraft resource packs directly on the panel: upload a ZIP, get a protected download link and SHA-1 for server.properties.",
+    "category": "plugin",
+    "url": null,
+    "update_url": null,
+    "namespace": "ItZRealMoritz\\ResourcePackHosting",
+    "class": "ResourcePackHostingPlugin",
+    "panels": [
+        "admin",
+        "app",
+        "server"
+    ],
+    "panel_version": null,
+    "api_version": 1,
+    "composer_packages": null
+}
