@@ -115,7 +115,7 @@ class PackValidator
 
                 $target = $workDir . '/files/' . $relative;
                 File::ensureDirectoryExists(dirname($target));
-                file_put_contents($target, $content);
+                File::put($target, $content);
                 $written[$relative] = $target;
 
                 unset($content);
@@ -132,8 +132,8 @@ class PackValidator
 
             return [
                 'path' => $outputPath,
-                'size' => (int) filesize($outputPath),
-                'sha1' => (string) sha1_file($outputPath),
+                'size' => (int) File::size($outputPath),
+                'sha1' => (string) File::hash($outputPath, 'sha1'),
                 'pack_format' => $meta['pack_format'],
                 'description' => $meta['description'],
                 'file_count' => count($written),
@@ -232,16 +232,14 @@ class PackValidator
     /** @throws InvalidPackException */
     private function readEntry(ZipArchive $zip, int $index, int $declaredSize, string $name): string
     {
-        $stream = $zip->getStreamIndex($index);
-        if ($stream === false) {
+        // Never trust the size from the ZIP header: read at most one byte more than declared.
+        $content = $zip->getFromIndex($index, $declaredSize + 1);
+
+        if ($content === false) {
             throw new InvalidPackException(trans('resource-pack-hosting::strings.errors.corrupt'));
         }
 
-        // Never trust the size from the ZIP header: read at most one byte more than declared.
-        $content = stream_get_contents($stream, $declaredSize + 1);
-        fclose($stream);
-
-        if ($content === false || strlen($content) !== $declaredSize) {
+        if (strlen($content) !== $declaredSize) {
             throw new InvalidPackException(trans('resource-pack-hosting::strings.errors.size_mismatch', ['file' => $name]));
         }
 

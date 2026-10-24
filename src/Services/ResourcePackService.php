@@ -4,6 +4,7 @@ namespace ItZRealMoritz\ResourcePackHosting\Services;
 
 use App\Models\Server;
 use App\Repositories\Daemon\DaemonFileRepository;
+use Illuminate\Http\File as HttpFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -60,11 +61,12 @@ class ResourcePackService
                 ]);
                 $pack->setRelation('server', $server);
 
-                $stream = fopen($result['path'], 'rb');
-                Storage::disk(self::DISK)->writeStream($pack->getStoragePath(), $stream);
-                if (is_resource($stream)) {
-                    fclose($stream);
-                }
+                $storagePath = $pack->getStoragePath();
+                Storage::disk(self::DISK)->putFileAs(
+                    dirname($storagePath),
+                    new HttpFile($result['path']),
+                    basename($storagePath),
+                );
 
                 $pack->save();
 

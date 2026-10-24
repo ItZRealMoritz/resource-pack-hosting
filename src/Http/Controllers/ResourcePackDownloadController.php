@@ -9,7 +9,6 @@ use ItZRealMoritz\ResourcePackHosting\Models\ResourcePack;
 use ItZRealMoritz\ResourcePackHosting\Services\ResourcePackService;
 use ItZRealMoritz\ResourcePackHosting\Services\ResourcePackSettings;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ResourcePackDownloadController extends Controller
 {
@@ -42,14 +41,9 @@ class ResourcePackDownloadController extends Controller
             'last_downloaded_at' => now(),
         ]);
 
-        return new StreamedResponse(function () use ($disk, $path) {
-            $stream = $disk->readStream($path);
-            fpassthru($stream);
-            fclose($stream);
-        }, 200, [
+        return $disk->download($path, 'pack.zip', [
             'Content-Type' => 'application/zip',
             'Content-Length' => (string) $pack->size,
-            'Content-Disposition' => 'attachment; filename="pack.zip"',
             'ETag' => '"' . $pack->sha1 . '"',
             'Cache-Control' => 'private, no-store',
             'X-Content-Type-Options' => 'nosniff',
